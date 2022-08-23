@@ -31,7 +31,7 @@ let UserService = class UserService {
         return await this.userRepository.findOneBy({ id });
     }
     async update(userId, updateUserDto) {
-        this.userRepository.update({
+        await this.userRepository.update({
             id: userId,
         }, {
             name: updateUserDto.name,
@@ -41,7 +41,7 @@ let UserService = class UserService {
             createAt: updateUserDto.createAt,
             updateAt: updateUserDto.updateAt,
         });
-        return this.findOne(userId);
+        return await this.findOne(userId);
     }
     remove(id) {
         this.userRepository.delete({ id });

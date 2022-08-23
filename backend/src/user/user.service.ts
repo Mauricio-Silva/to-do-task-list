@@ -25,7 +25,7 @@ export class UserService {
   }
 
   async update(userId: string, updateUserDto: UpdateUserDto): Promise<User> {
-    this.userRepository.update(
+    await this.userRepository.update(
       {
         id: userId,
       },
@@ -38,7 +38,7 @@ export class UserService {
         updateAt: updateUserDto.updateAt,
       },
     );
-    return this.findOne(userId);
+    return await this.findOne(userId);
   }
 
   remove(id: string): void {

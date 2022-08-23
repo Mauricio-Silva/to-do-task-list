@@ -31,13 +31,13 @@ let TaskService = class TaskService {
         return await this.taskRepository.findOneBy({ id });
     }
     async update(taskId, updateTaskDto) {
-        this.taskRepository.update({
+        await this.taskRepository.update({
             id: taskId,
         }, {
             description: updateTaskDto.description,
             status: updateTaskDto.status,
         });
-        return this.findOne(taskId);
+        return await this.findOne(taskId);
     }
     remove(id) {
         this.taskRepository.delete({ id });
