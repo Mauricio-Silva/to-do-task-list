@@ -31,8 +31,8 @@ __decorate([
 ], User.prototype, "password", void 0);
 __decorate([
     (0, typeorm_1.Column)(),
-    __metadata("design:type", Boolean)
-], User.prototype, "confirm", void 0);
+    __metadata("design:type", String)
+], User.prototype, "token", void 0);
 __decorate([
     (0, typeorm_1.Column)(),
     __metadata("design:type", Date)

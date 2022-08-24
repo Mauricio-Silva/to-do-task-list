@@ -37,3 +37,4 @@ lerna-debug.log*
 /.gitignore
 /docker-compose.yml
 /database
+/info.txt

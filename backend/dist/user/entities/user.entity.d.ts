@@ -3,7 +3,7 @@ export declare class User {
     name: string;
     email: string;
     password: string;
-    confirm: boolean;
+    token: string;
     createAt: Date;
     updateAt: Date;
     auth_code: string;

@@ -17,12 +17,20 @@ const common_1 = require("@nestjs/common");
 const typeorm_1 = require("@nestjs/typeorm");
 const typeorm_2 = require("typeorm");
 const user_entity_1 = require("./entities/user.entity");
+const bcrypt = require("bcrypt");
+const crypto = require("crypto");
 let UserService = class UserService {
     constructor(userRepository) {
         this.userRepository = userRepository;
     }
-    create(createUserDto) {
-        return this.userRepository.save(createUserDto);
+    async create(createUserDto) {
+        const original_password = createUserDto.password;
+        const salt = await bcrypt.genSalt();
+        createUserDto.password = await bcrypt.hash(original_password, salt);
+        createUserDto.token = crypto.randomBytes(32).toString('hex');
+        await this.userRepository.save(createUserDto);
+        createUserDto.password = '';
+        return createUserDto;
     }
     async findAll() {
         return await this.userRepository.find();
@@ -31,13 +39,16 @@ let UserService = class UserService {
         return await this.userRepository.findOneBy({ id });
     }
     async update(userId, updateUserDto) {
+        const original_password = updateUserDto.password;
+        const salt = await bcrypt.genSalt();
+        updateUserDto.password = await bcrypt.hash(original_password, salt);
         await this.userRepository.update({
             id: userId,
         }, {
             name: updateUserDto.name,
             email: updateUserDto.email,
             password: updateUserDto.password,
-            confirm: updateUserDto.confirm,
+            token: updateUserDto.token,
             createAt: updateUserDto.createAt,
             updateAt: updateUserDto.updateAt,
         });

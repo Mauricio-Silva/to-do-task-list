@@ -15,7 +15,7 @@ export class User {
   password: string;
 
   @Column()
-  confirm: boolean;
+  token: string;
 
   @Column()
   createAt: Date;
