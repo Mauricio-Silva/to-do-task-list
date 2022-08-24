@@ -28,7 +28,7 @@ let UserController = class UserController {
         return this.userService.findAll();
     }
     findOneUser(id) {
-        return this.userService.findOne(id);
+        return this.userService.findOneById(id);
     }
     createUser(createUserDto) {
         return this.userService.create(createUserDto);

@@ -35,8 +35,15 @@ let UserService = class UserService {
     async findAll() {
         return await this.userRepository.find();
     }
-    async findOne(id) {
+    async findOneById(id) {
         return await this.userRepository.findOneBy({ id });
+    }
+    async findOneByEmail(userEmail) {
+        return await this.userRepository.findOne({
+            where: {
+                email: userEmail,
+            },
+        });
     }
     async update(userId, updateUserDto) {
         const original_password = updateUserDto.password;
@@ -52,7 +59,7 @@ let UserService = class UserService {
             createAt: updateUserDto.createAt,
             updateAt: updateUserDto.updateAt,
         });
-        return await this.findOne(userId);
+        return await this.findOneById(userId);
     }
     remove(id) {
         this.userRepository.delete({ id });

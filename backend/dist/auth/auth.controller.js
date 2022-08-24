@@ -20,8 +20,14 @@ let AuthController = class AuthController {
     constructor(authService) {
         this.authService = authService;
     }
-    checkAuth(checkAuthDto) {
-        return this.authService.check(checkAuthDto);
+    async checkAuth(checkAuthDto) {
+        const check = await this.authService.check(checkAuthDto);
+        if (check === true) {
+            return 'Authorized';
+        }
+        else {
+            return 'Unauthorized';
+        }
     }
 };
 __decorate([
@@ -29,7 +35,7 @@ __decorate([
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [check_auth_dto_1.CheckAuthDto]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], AuthController.prototype, "checkAuth", null);
 AuthController = __decorate([
     (0, common_1.Controller)('login'),

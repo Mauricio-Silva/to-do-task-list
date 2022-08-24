@@ -7,9 +7,9 @@ export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Post()
-  checkAuth(@Body() checkAuthDto: CheckAuthDto): string {
-    const check = this.authService.check(checkAuthDto);
-    if (check) {
+  async checkAuth(@Body() checkAuthDto: CheckAuthDto): Promise<string> {
+    const check = await this.authService.check(checkAuthDto);
+    if (check === true) {
       return 'Authorized';
     } else {
       return 'Unauthorized';
