@@ -1,7 +1,16 @@
+import { CredentialsDto } from './../user/dto/credentials.dto';
+import { CreateUserDto } from './../user/dto/create-user.dto';
+import { User } from 'src/user/entities/user.entity';
 import { UserService } from './../user/user.service';
-import { CheckAuthDto } from './dto/check-auth.dto';
+import { JwtService } from '@nestjs/jwt';
+import { Repository } from 'typeorm';
 export declare class AuthService {
+    private userRepository;
     private readonly userService;
-    constructor(userService: UserService);
-    check(checkAuthDto: CheckAuthDto): Promise<boolean>;
+    private jwtService;
+    constructor(userRepository: Repository<User>, userService: UserService, jwtService: JwtService);
+    signUp(createUserDto: CreateUserDto): Promise<User>;
+    signIn(credentialsDto: CredentialsDto): Promise<{
+        token: string;
+    }>;
 }

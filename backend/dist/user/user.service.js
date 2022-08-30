@@ -24,45 +24,79 @@ let UserService = class UserService {
         this.userRepository = userRepository;
     }
     async create(createUserDto) {
-        const original_password = createUserDto.password;
-        const salt = await bcrypt.genSalt();
-        createUserDto.password = await bcrypt.hash(original_password, salt);
-        createUserDto.token = crypto.randomBytes(32).toString('hex');
-        await this.userRepository.save(createUserDto);
-        createUserDto.password = '';
-        return createUserDto;
+        createUserDto.confirmationToken = crypto.randomBytes(32).toString('hex');
+        createUserDto.salt = await bcrypt.genSalt();
+        createUserDto.password = await bcrypt.hash(createUserDto.password, createUserDto.salt);
+        try {
+            await this.userRepository.save(createUserDto);
+            delete createUserDto.password;
+            delete createUserDto.salt;
+            return createUserDto;
+        }
+        catch (error) {
+            if (error.code.toString() === '23505') {
+                throw new common_1.ConflictException('This email address is already in use');
+            }
+            else {
+                throw new common_1.InternalServerErrorException('Error in saving the user in database');
+            }
+        }
     }
     async findAll() {
-        return await this.userRepository.find();
+        try {
+            return await this.userRepository.find();
+        }
+        catch (error) {
+            console.log('Impossible to find all users');
+            return null;
+        }
     }
     async findOneById(id) {
-        return await this.userRepository.findOneBy({ id });
+        const user = this.userRepository
+            .createQueryBuilder('user')
+            .select(['user.name', 'user.email'])
+            .where('user.id = :id', { id: id })
+            .getOne();
+        if (!user)
+            throw new common_1.NotFoundException('User not found');
+        return user;
     }
-    async findOneByEmail(userEmail) {
-        return await this.userRepository.findOne({
-            where: {
-                email: userEmail,
-            },
-        });
+    async findOneByEmail(email) {
+        const user = await this.userRepository.findOneBy({ email });
+        if (!user)
+            throw new common_1.NotFoundException('User not found');
+        return user;
     }
-    async update(userId, updateUserDto) {
-        const original_password = updateUserDto.password;
-        const salt = await bcrypt.genSalt();
-        updateUserDto.password = await bcrypt.hash(original_password, salt);
-        await this.userRepository.update({
-            id: userId,
-        }, {
-            name: updateUserDto.name,
-            email: updateUserDto.email,
-            password: updateUserDto.password,
-            token: updateUserDto.token,
-            createAt: updateUserDto.createAt,
-            updateAt: updateUserDto.updateAt,
-        });
-        return await this.findOneById(userId);
+    async update(id, updateUserDto) {
+        const user = await this.findOneById(id);
+        const { name, email, status } = updateUserDto;
+        user.name = name ? name : user.name;
+        user.email = email ? email : user.email;
+        user.status = status === undefined ? user.status : status;
+        try {
+            await this.userRepository.save(user);
+            return user;
+        }
+        catch (error) {
+            throw new common_1.InternalServerErrorException('Error in saving the user in database');
+        }
     }
-    remove(id) {
-        this.userRepository.delete({ id });
+    async remove(id) {
+        const result = await this.userRepository.delete({ id });
+        if (result.affected === 0) {
+            throw new common_1.NotFoundException('Not found an user with the informed ID');
+        }
+    }
+    async checkCredential(credentialsDto) {
+        const { email, password } = credentialsDto;
+        let user = new user_entity_1.User();
+        user = await this.findOneByEmail(email);
+        if (user && (await user.checkPassword(password))) {
+            return user;
+        }
+        else {
+            return null;
+        }
     }
 };
 UserService = __decorate([

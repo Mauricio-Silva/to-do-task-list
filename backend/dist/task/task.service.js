@@ -21,13 +21,13 @@ let TaskService = class TaskService {
     constructor(taskRepository) {
         this.taskRepository = taskRepository;
     }
-    create(createTaskDto) {
+    async create(createTaskDto) {
         return this.taskRepository.save(createTaskDto);
     }
     async findAll() {
         return await this.taskRepository.find();
     }
-    async findOne(id) {
+    async findOneById(id) {
         return await this.taskRepository.findOneBy({ id });
     }
     async update(taskId, updateTaskDto) {
@@ -37,9 +37,9 @@ let TaskService = class TaskService {
             description: updateTaskDto.description,
             status: updateTaskDto.status,
         });
-        return await this.findOne(taskId);
+        return await this.findOneById(taskId);
     }
-    remove(id) {
+    async remove(id) {
         this.taskRepository.delete({ id });
     }
 };

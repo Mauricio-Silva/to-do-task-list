@@ -1,4 +1,3 @@
-import { Status } from './../enum/task.enum';
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity('task_table')
@@ -10,5 +9,5 @@ export class Task {
   description: string;
 
   @Column()
-  status: Status;
+  status: string;
 }

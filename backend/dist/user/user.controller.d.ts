@@ -7,8 +7,9 @@ export declare class UserController {
     constructor(userService: UserService);
     showMessage(): string;
     findAllUsers(): Promise<User[]>;
-    findOneUser(id: string): Promise<User>;
-    createUser(createUserDto: CreateUserDto): Promise<User>;
+    findOneUserById(id: string): Promise<User>;
+    findOneUserByEmail(email: string): Promise<User>;
+    createUser(createUserDto: CreateUserDto): Promise<CreateUserDto>;
     updateUser(id: string, updateUserDto: UpdateUserDto): Promise<User>;
-    removeUser(id: string): string;
+    removeUser(id: string): Promise<string>;
 }

@@ -28,7 +28,7 @@ export class TaskController {
 
   @Get('/:id')
   findOneTask(@Param('id') id: string): Promise<Task> {
-    return this.taskService.findOne(id);
+    return this.taskService.findOneById(id);
   }
 
   @Post()

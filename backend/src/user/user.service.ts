@@ -1,4 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import { CredentialsDto } from './dto/credentials.dto';
+import {
+  ConflictException,
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -13,54 +19,86 @@ export class UserService {
     @InjectRepository(User)
     private userRepository: Repository<User>,
   ) {}
-
-  async create(createUserDto: CreateUserDto): Promise<User> {
-    const original_password = createUserDto.password;
-    const salt = await bcrypt.genSalt();
-    createUserDto.password = await bcrypt.hash(original_password, salt);
-    createUserDto.token = crypto.randomBytes(32).toString('hex');
-    await this.userRepository.save(createUserDto);
-    createUserDto.password = '';
-    return createUserDto;
-  }
-
-  async findAll(): Promise<User[]> {
-    return await this.userRepository.find();
-  }
-
-  async findOneById(id: string): Promise<User> {
-    return await this.userRepository.findOneBy({ id });
-  }
-
-  async findOneByEmail(userEmail: string): Promise<User> {
-    return await this.userRepository.findOne({
-      where: {
-        email: userEmail,
-      },
-    });
-  }
-
-  async update(userId: string, updateUserDto: UpdateUserDto): Promise<User> {
-    const original_password = updateUserDto.password;
-    const salt = await bcrypt.genSalt();
-    updateUserDto.password = await bcrypt.hash(original_password, salt);
-    await this.userRepository.update(
-      {
-        id: userId,
-      },
-      {
-        name: updateUserDto.name,
-        email: updateUserDto.email,
-        password: updateUserDto.password,
-        token: updateUserDto.token,
-        createAt: updateUserDto.createAt,
-        updateAt: updateUserDto.updateAt,
-      },
+  //----------------------------------------------------------------------------->
+  async create(createUserDto: CreateUserDto): Promise<CreateUserDto> {
+    createUserDto.confirmationToken = crypto.randomBytes(32).toString('hex');
+    createUserDto.salt = await bcrypt.genSalt();
+    createUserDto.password = await bcrypt.hash(
+      createUserDto.password,
+      createUserDto.salt,
     );
-    return await this.findOneById(userId);
+    try {
+      await this.userRepository.save(createUserDto);
+      delete createUserDto.password;
+      delete createUserDto.salt;
+      return createUserDto;
+    } catch (error) {
+      if (error.code.toString() === '23505') {
+        throw new ConflictException('This email address is already in use');
+      } else {
+        throw new InternalServerErrorException(
+          'Error in saving the user in database',
+        );
+      }
+    }
   }
-
-  remove(id: string): void {
-    this.userRepository.delete({ id });
+  //----------------------------------------------------------------------------->
+  async findAll(): Promise<User[]> {
+    try {
+      return await this.userRepository.find();
+    } catch (error) {
+      console.log('Impossible to find all users');
+      return null;
+    }
+  }
+  //----------------------------------------------------------------------------->
+  async findOneById(id: string): Promise<User> {
+    const user = this.userRepository
+      .createQueryBuilder('user')
+      .select(['user.name', 'user.email'])
+      .where('user.id = :id', { id: id })
+      .getOne();
+    if (!user) throw new NotFoundException('User not found');
+    return user;
+  }
+  //----------------------------------------------------------------------------->
+  async findOneByEmail(email: string): Promise<User> {
+    const user = await this.userRepository.findOneBy({ email });
+    if (!user) throw new NotFoundException('User not found');
+    return user;
+  }
+  //----------------------------------------------------------------------------->
+  async update(id: string, updateUserDto: UpdateUserDto): Promise<User> {
+    const user = await this.findOneById(id);
+    const { name, email, status } = updateUserDto;
+    user.name = name ? name : user.name;
+    user.email = email ? email : user.email;
+    user.status = status === undefined ? user.status : status;
+    try {
+      await this.userRepository.save(user);
+      return user;
+    } catch (error) {
+      throw new InternalServerErrorException(
+        'Error in saving the user in database',
+      );
+    }
+  }
+  //----------------------------------------------------------------------------->
+  async remove(id: string): Promise<void> {
+    const result = await this.userRepository.delete({ id });
+    if (result.affected === 0) {
+      throw new NotFoundException('Not found an user with the informed ID');
+    }
+  }
+  //----------------------------------------------------------------------------->
+  async checkCredential(credentialsDto: CredentialsDto): Promise<User> {
+    const { email, password } = credentialsDto;
+    let user = new User();
+    user = await this.findOneByEmail(email);
+    if (user && (await user.checkPassword(password))) {
+      return user;
+    } else {
+      return null;
+    }
   }
 }

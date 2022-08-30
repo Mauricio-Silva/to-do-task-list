@@ -11,19 +11,19 @@ export class TaskService {
     @InjectRepository(Task)
     private taskRepository: Repository<Task>,
   ) {}
-
-  create(createTaskDto: CreateTaskDto): Promise<Task> {
+  //----------------------------------------------------------------------------->
+  async create(createTaskDto: CreateTaskDto): Promise<Task> {
     return this.taskRepository.save(createTaskDto);
   }
-
+  //----------------------------------------------------------------------------->
   async findAll(): Promise<Task[]> {
     return await this.taskRepository.find();
   }
-
-  async findOne(id: string): Promise<Task> {
+  //----------------------------------------------------------------------------->
+  async findOneById(id: string): Promise<Task> {
     return await this.taskRepository.findOneBy({ id });
   }
-
+  //----------------------------------------------------------------------------->
   async update(taskId: string, updateTaskDto: UpdateTaskDto): Promise<Task> {
     await this.taskRepository.update(
       {
@@ -34,10 +34,10 @@ export class TaskService {
         status: updateTaskDto.status,
       },
     );
-    return await this.findOne(taskId);
+    return await this.findOneById(taskId);
   }
-
-  remove(id: string): void {
+  //----------------------------------------------------------------------------->
+  async remove(id: string): Promise<void> {
     this.taskRepository.delete({ id });
   }
 }

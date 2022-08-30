@@ -3,8 +3,11 @@ export declare class User {
     name: string;
     email: string;
     password: string;
-    token: string;
+    status: boolean;
+    confirmationToken: string;
+    salt: string;
     createAt: Date;
     updateAt: Date;
     auth_code: string;
+    checkPassword(password: string): Promise<boolean>;
 }

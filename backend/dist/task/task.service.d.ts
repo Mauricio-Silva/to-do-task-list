@@ -7,7 +7,7 @@ export declare class TaskService {
     constructor(taskRepository: Repository<Task>);
     create(createTaskDto: CreateTaskDto): Promise<Task>;
     findAll(): Promise<Task[]>;
-    findOne(id: string): Promise<Task>;
+    findOneById(id: string): Promise<Task>;
     update(taskId: string, updateTaskDto: UpdateTaskDto): Promise<Task>;
-    remove(id: string): void;
+    remove(id: string): Promise<void>;
 }

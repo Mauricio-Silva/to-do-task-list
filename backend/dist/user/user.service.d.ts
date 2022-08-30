@@ -1,3 +1,4 @@
+import { CredentialsDto } from './dto/credentials.dto';
 import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -5,10 +6,11 @@ import { User } from './entities/user.entity';
 export declare class UserService {
     private userRepository;
     constructor(userRepository: Repository<User>);
-    create(createUserDto: CreateUserDto): Promise<User>;
+    create(createUserDto: CreateUserDto): Promise<CreateUserDto>;
     findAll(): Promise<User[]>;
     findOneById(id: string): Promise<User>;
-    findOneByEmail(userEmail: string): Promise<User>;
-    update(userId: string, updateUserDto: UpdateUserDto): Promise<User>;
-    remove(id: string): void;
+    findOneByEmail(email: string): Promise<User>;
+    update(id: string, updateUserDto: UpdateUserDto): Promise<User>;
+    remove(id: string): Promise<void>;
+    checkCredential(credentialsDto: CredentialsDto): Promise<User>;
 }

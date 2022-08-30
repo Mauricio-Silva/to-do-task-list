@@ -10,7 +10,6 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Task = void 0;
-const task_enum_1 = require("./../enum/task.enum");
 const typeorm_1 = require("typeorm");
 let Task = class Task {
 };
@@ -24,7 +23,7 @@ __decorate([
 ], Task.prototype, "description", void 0);
 __decorate([
     (0, typeorm_1.Column)(),
-    __metadata("design:type", Number)
+    __metadata("design:type", String)
 ], Task.prototype, "status", void 0);
 Task = __decorate([
     (0, typeorm_1.Entity)('task_table')

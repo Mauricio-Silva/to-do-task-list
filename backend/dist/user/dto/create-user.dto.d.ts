@@ -2,9 +2,11 @@ export declare class CreateUserDto {
     id: string;
     name: string;
     email: string;
+    status: boolean;
     password: string;
-    token: string;
+    confirmationPassword: string;
+    confirmationToken: string;
+    salt: string;
     createAt: Date;
     updateAt: Date;
-    auth_code: string;
 }

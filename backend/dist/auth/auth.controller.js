@@ -14,31 +14,53 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AuthController = void 0;
 const common_1 = require("@nestjs/common");
+const credentials_dto_1 = require("./../user/dto/credentials.dto");
+const create_user_dto_1 = require("./../user/dto/create-user.dto");
+const user_entity_1 = require("../user/entities/user.entity");
+const get_user_decorator_1 = require("./get-user.decorator");
+const passport_1 = require("@nestjs/passport");
 const auth_service_1 = require("./auth.service");
-const check_auth_dto_1 = require("./dto/check-auth.dto");
 let AuthController = class AuthController {
     constructor(authService) {
         this.authService = authService;
     }
-    async checkAuth(checkAuthDto) {
-        const check = await this.authService.check(checkAuthDto);
-        if (check === true) {
-            return 'Authorized';
-        }
-        else {
-            return 'Unauthorized';
-        }
+    async signUp(createUserDto) {
+        await this.authService.signUp(createUserDto);
+        return {
+            message: 'Successfully registered',
+        };
+    }
+    async signIn(credentialsDto) {
+        return await this.authService.signIn(credentialsDto);
+    }
+    getMetadataArgsStorage(user) {
+        return user;
     }
 };
 __decorate([
-    (0, common_1.Post)(),
-    __param(0, (0, common_1.Body)()),
+    (0, common_1.Post)('/signup'),
+    __param(0, (0, common_1.Body)(common_1.ValidationPipe)),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [check_auth_dto_1.CheckAuthDto]),
+    __metadata("design:paramtypes", [create_user_dto_1.CreateUserDto]),
     __metadata("design:returntype", Promise)
-], AuthController.prototype, "checkAuth", null);
+], AuthController.prototype, "signUp", null);
+__decorate([
+    (0, common_1.Post)('/signin'),
+    __param(0, (0, common_1.Body)(common_1.ValidationPipe)),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [credentials_dto_1.CredentialsDto]),
+    __metadata("design:returntype", Promise)
+], AuthController.prototype, "signIn", null);
+__decorate([
+    (0, common_1.Get)('/me'),
+    (0, common_1.UseGuards)((0, passport_1.AuthGuard)()),
+    __param(0, (0, get_user_decorator_1.GetUser)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [user_entity_1.User]),
+    __metadata("design:returntype", user_entity_1.User)
+], AuthController.prototype, "getMetadataArgsStorage", null);
 AuthController = __decorate([
-    (0, common_1.Controller)('login'),
+    (0, common_1.Controller)('auth'),
     __metadata("design:paramtypes", [auth_service_1.AuthService])
 ], AuthController);
 exports.AuthController = AuthController;

@@ -17,6 +17,7 @@ const common_1 = require("@nestjs/common");
 const user_service_1 = require("./user.service");
 const create_user_dto_1 = require("./dto/create-user.dto");
 const update_user_dto_1 = require("./dto/update-user.dto");
+const passport_1 = require("@nestjs/passport");
 let UserController = class UserController {
     constructor(userService) {
         this.userService = userService;
@@ -27,8 +28,11 @@ let UserController = class UserController {
     findAllUsers() {
         return this.userService.findAll();
     }
-    findOneUser(id) {
+    findOneUserById(id) {
         return this.userService.findOneById(id);
+    }
+    findOneUserByEmail(email) {
+        return this.userService.findOneByEmail(email);
     }
     createUser(createUserDto) {
         return this.userService.create(createUserDto);
@@ -36,9 +40,9 @@ let UserController = class UserController {
     updateUser(id, updateUserDto) {
         return this.userService.update(id, updateUserDto);
     }
-    removeUser(id) {
-        this.userService.remove(id);
-        return 'The User was Removed';
+    async removeUser(id) {
+        await this.userService.remove(id);
+        return 'The User was successfully Removed';
     }
 };
 __decorate([
@@ -59,7 +63,15 @@ __decorate([
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
-], UserController.prototype, "findOneUser", null);
+], UserController.prototype, "findOneUserById", null);
+__decorate([
+    (0, common_1.Get)('/:email'),
+    (0, common_1.UseGuards)((0, passport_1.AuthGuard)()),
+    __param(0, (0, common_1.Param)('email')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], UserController.prototype, "findOneUserByEmail", null);
 __decorate([
     (0, common_1.Post)(),
     __param(0, (0, common_1.Body)()),
@@ -70,7 +82,7 @@ __decorate([
 __decorate([
     (0, common_1.Patch)('/:id'),
     __param(0, (0, common_1.Param)('id')),
-    __param(1, (0, common_1.Body)()),
+    __param(1, (0, common_1.Body)(common_1.ValidationPipe)),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, update_user_dto_1.UpdateUserDto]),
     __metadata("design:returntype", Promise)
@@ -80,7 +92,7 @@ __decorate([
     __param(0, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
-    __metadata("design:returntype", String)
+    __metadata("design:returntype", Promise)
 ], UserController.prototype, "removeUser", null);
 UserController = __decorate([
     (0, common_1.Controller)('user'),

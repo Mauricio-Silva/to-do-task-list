@@ -1,18 +1,42 @@
-import { Controller, Post, Body } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  ValidationPipe,
+  Get,
+  UseGuards,
+} from '@nestjs/common';
+import { CredentialsDto } from './../user/dto/credentials.dto';
+import { CreateUserDto } from './../user/dto/create-user.dto';
+import { User } from 'src/user/entities/user.entity';
+import { GetUser } from './get-user.decorator';
+import { AuthGuard } from '@nestjs/passport';
 import { AuthService } from './auth.service';
-import { CheckAuthDto } from './dto/check-auth.dto';
 
-@Controller('login')
+@Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  @Post()
-  async checkAuth(@Body() checkAuthDto: CheckAuthDto): Promise<string> {
-    const check = await this.authService.check(checkAuthDto);
-    if (check === true) {
-      return 'Authorized';
-    } else {
-      return 'Unauthorized';
-    }
+  @Post('/signup')
+  async signUp(
+    @Body(ValidationPipe) createUserDto: CreateUserDto,
+  ): Promise<{ message: string }> {
+    await this.authService.signUp(createUserDto);
+    return {
+      message: 'Successfully registered',
+    };
+  }
+
+  @Post('/signin')
+  async signIn(
+    @Body(ValidationPipe) credentialsDto: CredentialsDto,
+  ): Promise<{ token: string }> {
+    return await this.authService.signIn(credentialsDto);
+  }
+
+  @Get('/me')
+  @UseGuards(AuthGuard())
+  getMetadataArgsStorage(@GetUser() user: User): User {
+    return user;
   }
 }
