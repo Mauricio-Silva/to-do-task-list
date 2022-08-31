@@ -9,11 +9,11 @@ import {
   UseGuards,
   ValidationPipe,
 } from '@nestjs/common';
-import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { AuthGuard } from '@nestjs/passport';
 import { User } from './entities/user.entity';
+import { AuthGuard } from '@nestjs/passport';
+import { UserService } from './user.service';
 
 @Controller('user')
 export class UserController {

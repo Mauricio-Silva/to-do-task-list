@@ -1,15 +1,15 @@
-import { CredentialsDto } from './dto/credentials.dto';
 import {
   ConflictException,
   Injectable,
   InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { CredentialsDto } from './dto/credentials.dto';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
+import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import * as crypto from 'crypto';
 
@@ -48,8 +48,7 @@ export class UserService {
     try {
       return await this.userRepository.find();
     } catch (error) {
-      console.log('Impossible to find all users');
-      return null;
+      throw new InternalServerErrorException('Impossible to find all users');
     }
   }
   //----------------------------------------------------------------------------->
@@ -64,7 +63,6 @@ export class UserService {
   }
   //----------------------------------------------------------------------------->
   async findOneByEmail(email: string): Promise<User> {
-    // const user = await this.userRepository.findOneBy({ email });
     const user = this.userRepository
       .createQueryBuilder('user')
       .select(['user.name', 'user.email'])

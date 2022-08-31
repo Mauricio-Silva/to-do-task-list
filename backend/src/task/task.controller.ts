@@ -7,10 +7,10 @@ import {
   Param,
   Delete,
 } from '@nestjs/common';
-import { TaskService } from './task.service';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
 import { Task } from './entities/task.entity';
+import { TaskService } from './task.service';
 
 @Controller('task')
 export class TaskController {
@@ -27,8 +27,15 @@ export class TaskController {
   }
 
   @Get('/:id')
-  findOneTask(@Param('id') id: string): Promise<Task> {
+  findOneTaskById(@Param('id') id: string): Promise<Task> {
     return this.taskService.findOneById(id);
+  }
+
+  @Get('/desc/:description')
+  findOneTaskByDescription(
+    @Param('description') description: string,
+  ): Promise<Task> {
+    return this.taskService.findOneByDescription(description);
   }
 
   @Post()
@@ -45,8 +52,8 @@ export class TaskController {
   }
 
   @Delete('/:id')
-  removeTask(@Param('id') id: string): string {
-    this.taskService.remove(id);
-    return 'The Task was Removed';
+  async removeTask(@Param('id') id: string): Promise<string> {
+    await this.taskService.remove(id);
+    return 'The Task was successfully Removed';
   }
 }
