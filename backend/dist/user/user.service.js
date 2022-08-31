@@ -27,6 +27,7 @@ let UserService = class UserService {
         createUserDto.confirmationToken = crypto.randomBytes(32).toString('hex');
         createUserDto.salt = await bcrypt.genSalt();
         createUserDto.password = await bcrypt.hash(createUserDto.password, createUserDto.salt);
+        createUserDto.status = false;
         try {
             await this.userRepository.save(createUserDto);
             delete createUserDto.password;
@@ -62,20 +63,24 @@ let UserService = class UserService {
         return user;
     }
     async findOneByEmail(email) {
-        const user = await this.userRepository.findOneBy({ email });
+        const user = this.userRepository
+            .createQueryBuilder('user')
+            .select(['user.name', 'user.email'])
+            .where('user.email = :email', { email: email })
+            .getOne();
         if (!user)
             throw new common_1.NotFoundException('User not found');
         return user;
     }
     async update(id, updateUserDto) {
-        const user = await this.findOneById(id);
+        const user = await this.userRepository.findOneBy({ id });
         const { name, email, status } = updateUserDto;
         user.name = name ? name : user.name;
         user.email = email ? email : user.email;
         user.status = status === undefined ? user.status : status;
         try {
             await this.userRepository.save(user);
-            return user;
+            return this.findOneById(id);
         }
         catch (error) {
             throw new common_1.InternalServerErrorException('Error in saving the user in database');

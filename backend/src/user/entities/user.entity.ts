@@ -36,9 +36,6 @@ export class User {
   @UpdateDateColumn()
   updateAt: Date;
 
-  @Column()
-  auth_code: string;
-
   async checkPassword(password: string): Promise<boolean> {
     const hash = await bcrypt.hash(password, this.salt);
     return hash === this.password;

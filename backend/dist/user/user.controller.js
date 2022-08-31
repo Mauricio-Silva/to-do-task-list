@@ -65,7 +65,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "findOneUserById", null);
 __decorate([
-    (0, common_1.Get)('/:email'),
+    (0, common_1.Get)('/email/:email'),
     (0, common_1.UseGuards)((0, passport_1.AuthGuard)()),
     __param(0, (0, common_1.Param)('email')),
     __metadata("design:type", Function),

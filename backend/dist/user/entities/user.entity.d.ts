@@ -8,6 +8,5 @@ export declare class User {
     salt: string;
     createAt: Date;
     updateAt: Date;
-    auth_code: string;
     checkPassword(password: string): Promise<boolean>;
 }

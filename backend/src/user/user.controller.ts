@@ -34,7 +34,7 @@ export class UserController {
     return this.userService.findOneById(id);
   }
 
-  @Get('/:email')
+  @Get('/email/:email')
   @UseGuards(AuthGuard())
   findOneUserByEmail(@Param('email') email: string): Promise<User> {
     return this.userService.findOneByEmail(email);
