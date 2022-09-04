@@ -14,9 +14,9 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.TaskController = void 0;
 const common_1 = require("@nestjs/common");
-const task_service_1 = require("./task.service");
 const create_task_dto_1 = require("./dto/create-task.dto");
 const update_task_dto_1 = require("./dto/update-task.dto");
+const task_service_1 = require("./task.service");
 let TaskController = class TaskController {
     constructor(taskService) {
         this.taskService = taskService;
@@ -27,8 +27,11 @@ let TaskController = class TaskController {
     findAllTasks() {
         return this.taskService.findAll();
     }
-    findOneTask(id) {
+    findOneTaskById(id) {
         return this.taskService.findOneById(id);
+    }
+    findOneTaskByDescription(description) {
+        return this.taskService.findOneByDescription(description);
     }
     createTask(createTaskDto) {
         return this.taskService.create(createTaskDto);
@@ -36,9 +39,9 @@ let TaskController = class TaskController {
     updateTask(id, updateTaskDto) {
         return this.taskService.update(id, updateTaskDto);
     }
-    removeTask(id) {
-        this.taskService.remove(id);
-        return 'The Task was Removed';
+    async removeTask(id) {
+        await this.taskService.remove(id);
+        return 'The Task was successfully Removed';
     }
 };
 __decorate([
@@ -59,7 +62,14 @@ __decorate([
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
-], TaskController.prototype, "findOneTask", null);
+], TaskController.prototype, "findOneTaskById", null);
+__decorate([
+    (0, common_1.Get)('/desc/:description'),
+    __param(0, (0, common_1.Param)('description')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], TaskController.prototype, "findOneTaskByDescription", null);
 __decorate([
     (0, common_1.Post)(),
     __param(0, (0, common_1.Body)()),
@@ -80,7 +90,7 @@ __decorate([
     __param(0, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
-    __metadata("design:returntype", String)
+    __metadata("design:returntype", Promise)
 ], TaskController.prototype, "removeTask", null);
 TaskController = __decorate([
     (0, common_1.Controller)('task'),

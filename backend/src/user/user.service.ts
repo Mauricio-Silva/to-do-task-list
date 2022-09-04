@@ -98,7 +98,7 @@ export class UserService {
   async checkCredential(credentialsDto: CredentialsDto): Promise<User> {
     const { email, password } = credentialsDto;
     let user = new User();
-    user = await this.findOneByEmail(email);
+    user = await this.userRepository.findOneBy({ email });
     if (user && (await user.checkPassword(password))) {
       return user;
     } else {

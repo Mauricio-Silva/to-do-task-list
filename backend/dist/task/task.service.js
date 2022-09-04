@@ -15,32 +15,70 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.TaskService = void 0;
 const common_1 = require("@nestjs/common");
 const typeorm_1 = require("@nestjs/typeorm");
-const typeorm_2 = require("typeorm");
 const task_entity_1 = require("./entities/task.entity");
+const task_enum_1 = require("./enum/task.enum");
+const typeorm_2 = require("typeorm");
 let TaskService = class TaskService {
     constructor(taskRepository) {
         this.taskRepository = taskRepository;
     }
     async create(createTaskDto) {
-        return this.taskRepository.save(createTaskDto);
+        try {
+            createTaskDto.status = task_enum_1.Status.PENDING;
+            await this.taskRepository.save(createTaskDto);
+            delete createTaskDto.id;
+            return createTaskDto;
+        }
+        catch (error) {
+            throw new common_1.InternalServerErrorException('Error in saving the user in database');
+        }
     }
     async findAll() {
-        return await this.taskRepository.find();
+        try {
+            return await this.taskRepository.find();
+        }
+        catch (error) {
+            throw new common_1.InternalServerErrorException('Impossible to find all users');
+        }
     }
     async findOneById(id) {
-        return await this.taskRepository.findOneBy({ id });
+        const task = this.taskRepository
+            .createQueryBuilder('task')
+            .select(['task.description', 'task.status'])
+            .where('task.id = :id', { id: id })
+            .getOne();
+        if (!task)
+            throw new common_1.NotFoundException('Task not found');
+        return task;
     }
-    async update(taskId, updateTaskDto) {
-        await this.taskRepository.update({
-            id: taskId,
-        }, {
-            description: updateTaskDto.description,
-            status: updateTaskDto.status,
-        });
-        return await this.findOneById(taskId);
+    async findOneByDescription(description) {
+        const task = this.taskRepository
+            .createQueryBuilder('task')
+            .select(['task.description', 'task.status'])
+            .where('task.description = :description', { description: description })
+            .getOne();
+        if (!task)
+            throw new common_1.NotFoundException('Task not found');
+        return task;
+    }
+    async update(id, updateTaskDto) {
+        const task = await this.taskRepository.findOneBy({ id });
+        const { description, status } = updateTaskDto;
+        task.description = description ? description : task.description;
+        task.status = status ? status : task.status;
+        try {
+            await this.taskRepository.save(task);
+            return this.findOneById(id);
+        }
+        catch (error) {
+            throw new common_1.InternalServerErrorException('Error in saving the task in database');
+        }
     }
     async remove(id) {
-        this.taskRepository.delete({ id });
+        const result = await this.taskRepository.delete({ id });
+        if (result.affected === 0) {
+            throw new common_1.NotFoundException('Not found a task with the informed ID');
+        }
     }
 };
 TaskService = __decorate([

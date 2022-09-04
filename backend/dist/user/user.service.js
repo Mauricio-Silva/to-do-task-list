@@ -15,8 +15,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.UserService = void 0;
 const common_1 = require("@nestjs/common");
 const typeorm_1 = require("@nestjs/typeorm");
-const typeorm_2 = require("typeorm");
 const user_entity_1 = require("./entities/user.entity");
+const typeorm_2 = require("typeorm");
 const bcrypt = require("bcrypt");
 const crypto = require("crypto");
 let UserService = class UserService {
@@ -48,8 +48,7 @@ let UserService = class UserService {
             return await this.userRepository.find();
         }
         catch (error) {
-            console.log('Impossible to find all users');
-            return null;
+            throw new common_1.InternalServerErrorException('Impossible to find all users');
         }
     }
     async findOneById(id) {
@@ -95,7 +94,7 @@ let UserService = class UserService {
     async checkCredential(credentialsDto) {
         const { email, password } = credentialsDto;
         let user = new user_entity_1.User();
-        user = await this.findOneByEmail(email);
+        user = await this.userRepository.findOneBy({ email });
         if (user && (await user.checkPassword(password))) {
             return user;
         }
