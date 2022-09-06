@@ -1,3 +1,4 @@
+import { Task } from './../../task/entities/task.entity';
 export declare class User {
     id: string;
     name: string;
@@ -8,5 +9,6 @@ export declare class User {
     salt: string;
     createAt: Date;
     updateAt: Date;
+    task: Task;
     checkPassword(password: string): Promise<boolean>;
 }

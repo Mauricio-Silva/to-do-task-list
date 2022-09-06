@@ -1,3 +1,4 @@
+import { Task } from './../../task/entities/task.entity';
 export declare class CreateUserDto {
     id: string;
     name: string;
@@ -9,4 +10,5 @@ export declare class CreateUserDto {
     salt: string;
     createAt: Date;
     updateAt: Date;
+    task: Task;
 }

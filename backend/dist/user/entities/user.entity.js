@@ -10,6 +10,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.User = void 0;
+const task_entity_1 = require("./../../task/entities/task.entity");
 const bcrypt = require("bcrypt");
 const typeorm_1 = require("typeorm");
 let User = class User {
@@ -54,6 +55,10 @@ __decorate([
     (0, typeorm_1.UpdateDateColumn)(),
     __metadata("design:type", Date)
 ], User.prototype, "updateAt", void 0);
+__decorate([
+    (0, typeorm_1.ManyToOne)(() => task_entity_1.Task, (task) => task.users),
+    __metadata("design:type", task_entity_1.Task)
+], User.prototype, "task", void 0);
 User = __decorate([
     (0, typeorm_1.Entity)('user_table')
 ], User);

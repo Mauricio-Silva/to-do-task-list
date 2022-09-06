@@ -12,6 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Task = void 0;
 const task_enum_1 = require("./../enum/task.enum");
 const typeorm_1 = require("typeorm");
+const user_entity_1 = require("../../user/entities/user.entity");
 let Task = class Task {
     constructor() {
         this.status = task_enum_1.Status.PENDING;
@@ -29,6 +30,10 @@ __decorate([
     (0, typeorm_1.Column)(),
     __metadata("design:type", String)
 ], Task.prototype, "status", void 0);
+__decorate([
+    (0, typeorm_1.OneToMany)(() => user_entity_1.User, (users) => users.task),
+    __metadata("design:type", Array)
+], Task.prototype, "users", void 0);
 Task = __decorate([
     (0, typeorm_1.Entity)('task_table')
 ], Task);

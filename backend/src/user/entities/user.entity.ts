@@ -1,8 +1,12 @@
+import { Task } from './../../task/entities/task.entity';
 import * as bcrypt from 'bcrypt';
 import {
   Column,
   CreateDateColumn,
   Entity,
+  // JoinColumn,
+  ManyToOne,
+  // OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -35,6 +39,20 @@ export class User {
 
   @UpdateDateColumn()
   updateAt: Date;
+
+  // One-to-one Unidirectional relationship
+  // @OneToOne(() => Task)
+  // @JoinColumn()
+  // task: Task;
+
+  // One-to-one Bidirectional relationship
+  // @OneToOne(() => Task, (task) => task.user)
+  // @JoinColumn()
+  // task: Task;
+
+  // Many-to-many relationship
+  @ManyToOne(() => Task, (task) => task.users)
+  task: Task;
 
   async checkPassword(password: string): Promise<boolean> {
     const hash = await bcrypt.hash(password, this.salt);
