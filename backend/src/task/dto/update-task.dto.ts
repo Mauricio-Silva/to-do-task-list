@@ -3,9 +3,7 @@ import { IsEnum, IsOptional, IsString } from 'class-validator';
 
 export class UpdateTaskDto {
   @IsOptional()
-  @IsString({
-    message: 'Inform a valid description',
-  })
+  @IsString({ message: 'Inform a valid description' })
   description: string;
 
   @IsOptional()

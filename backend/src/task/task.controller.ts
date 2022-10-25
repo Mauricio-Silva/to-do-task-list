@@ -39,7 +39,7 @@ export class TaskController {
   }
 
   @Post()
-  createTask(@Body() createTaskDto: CreateTaskDto): Promise<Task> {
+  createTask(@Body() createTaskDto: CreateTaskDto): Promise<CreateTaskDto> {
     return this.taskService.create(createTaskDto);
   }
 
@@ -52,8 +52,7 @@ export class TaskController {
   }
 
   @Delete('/:id')
-  async removeTask(@Param('id') id: string): Promise<string> {
-    await this.taskService.remove(id);
-    return 'The Task was successfully Removed';
+  removeTask(@Param('id') id: string): Promise<string> {
+    return this.taskService.remove(id);
   }
 }

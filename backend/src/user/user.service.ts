@@ -19,6 +19,7 @@ export class UserService {
     @InjectRepository(User)
     private userRepository: Repository<User>,
   ) {}
+
   //----------------------------------------------------------------------------->
   async create(createUserDto: CreateUserDto): Promise<CreateUserDto> {
     createUserDto.confirmationToken = crypto.randomBytes(32).toString('hex');
@@ -43,6 +44,7 @@ export class UserService {
       }
     }
   }
+
   //----------------------------------------------------------------------------->
   async findAll(): Promise<User[]> {
     try {
@@ -51,6 +53,7 @@ export class UserService {
       throw new InternalServerErrorException('Impossible to find all users');
     }
   }
+
   //----------------------------------------------------------------------------->
   async findOneById(id: string): Promise<User> {
     const user = this.userRepository
@@ -61,6 +64,7 @@ export class UserService {
     if (!user) throw new NotFoundException('User not found');
     return user;
   }
+
   //----------------------------------------------------------------------------->
   async findOneByEmail(email: string): Promise<User> {
     const user = this.userRepository
@@ -71,6 +75,7 @@ export class UserService {
     if (!user) throw new NotFoundException('User not found');
     return user;
   }
+
   //----------------------------------------------------------------------------->
   async update(id: string, updateUserDto: UpdateUserDto): Promise<User> {
     const user = await this.userRepository.findOneBy({ id });
@@ -87,13 +92,17 @@ export class UserService {
       );
     }
   }
+
   //----------------------------------------------------------------------------->
-  async remove(id: string): Promise<void> {
+  async remove(id: string): Promise<string> {
+    const user = await this.findOneById(id);
     const result = await this.userRepository.delete({ id });
     if (result.affected === 0) {
       throw new NotFoundException('Not found an user with the informed ID');
     }
+    return 'The user ' + user.name + ' was removed from the database';
   }
+
   //----------------------------------------------------------------------------->
   async checkCredential(credentialsDto: CredentialsDto): Promise<User> {
     const { email, password } = credentialsDto;

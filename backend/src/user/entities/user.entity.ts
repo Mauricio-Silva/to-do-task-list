@@ -50,7 +50,7 @@ export class User {
   // @JoinColumn()
   // task: Task;
 
-  // Many-to-many relationship
+  // Many-to-One relationship
   @ManyToOne(() => Task, (task) => task.users)
   task: Task;
 

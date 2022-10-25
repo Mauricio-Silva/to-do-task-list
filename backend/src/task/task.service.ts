@@ -16,8 +16,9 @@ export class TaskService {
     @InjectRepository(Task)
     private taskRepository: Repository<Task>,
   ) {}
+
   //----------------------------------------------------------------------------->
-  async create(createTaskDto: CreateTaskDto): Promise<Task> {
+  async create(createTaskDto: CreateTaskDto): Promise<CreateTaskDto> {
     try {
       createTaskDto.status = Status.PENDING;
       await this.taskRepository.save(createTaskDto);
@@ -29,6 +30,7 @@ export class TaskService {
       );
     }
   }
+
   //----------------------------------------------------------------------------->
   async findAll(): Promise<Task[]> {
     try {
@@ -37,6 +39,7 @@ export class TaskService {
       throw new InternalServerErrorException('Impossible to find all users');
     }
   }
+
   //----------------------------------------------------------------------------->
   async findOneById(id: string): Promise<Task> {
     const task = this.taskRepository
@@ -47,6 +50,7 @@ export class TaskService {
     if (!task) throw new NotFoundException('Task not found');
     return task;
   }
+
   //----------------------------------------------------------------------------->
   async findOneByDescription(description: string): Promise<Task> {
     const task = this.taskRepository
@@ -57,6 +61,7 @@ export class TaskService {
     if (!task) throw new NotFoundException('Task not found');
     return task;
   }
+
   //----------------------------------------------------------------------------->
   async update(id: string, updateTaskDto: UpdateTaskDto): Promise<Task> {
     const task = await this.taskRepository.findOneBy({ id });
@@ -72,12 +77,14 @@ export class TaskService {
       );
     }
   }
+
   //----------------------------------------------------------------------------->
-  async remove(id: string): Promise<void> {
+  async remove(id: string): Promise<string> {
     const result = await this.taskRepository.delete({ id });
     if (result.affected === 0) {
       throw new NotFoundException('Not found a task with the informed ID');
     }
+    return 'The task has been removed from the database';
   }
   //----------------------------------------------------------------------------->
 }

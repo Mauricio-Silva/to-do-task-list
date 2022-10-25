@@ -54,8 +54,7 @@ export class UserController {
   }
 
   @Delete('/:id')
-  async removeUser(@Param('id') id: string): Promise<string> {
-    await this.userService.remove(id);
-    return 'The User was successfully Removed';
+  removeUser(@Param('id') id: string): Promise<string> {
+    return this.userService.remove(id);
   }
 }
