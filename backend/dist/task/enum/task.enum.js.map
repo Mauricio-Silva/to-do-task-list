@@ -1,1 +1,1 @@
-{"version":3,"file":"task.enum.js","sourceRoot":"","sources":["../../../src/task/enum/task.enum.ts"],"names":[],"mappings":";;;AAAA,IAAY,MAKX;AALD,WAAY,MAAM;IAChB,6BAAmB,CAAA;IACnB,mBAAS,CAAA;IACT,yBAAe,CAAA;IACf,iCAAuB,CAAA;AACzB,CAAC,EALW,MAAM,GAAN,cAAM,KAAN,cAAM,QAKjB"}
+{"version":3,"file":"task.enum.js","sourceRoot":"","sources":["../../../src/task/enum/task.enum.ts"],"names":[],"mappings":";;;AAAA,IAAY,MAIX;AAJD,WAAY,MAAM;IAChB,mBAAS,CAAA;IACT,yBAAe,CAAA;IACf,uBAAa,CAAA;AACf,CAAC,EAJW,MAAM,GAAN,cAAM,KAAN,cAAM,QAIjB"}

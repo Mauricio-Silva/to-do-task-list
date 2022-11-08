@@ -16,9 +16,7 @@ class UpdateTaskDto {
 }
 __decorate([
     (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsString)({
-        message: 'Inform a valid description',
-    }),
+    (0, class_validator_1.IsString)({ message: 'Inform a valid description' }),
     __metadata("design:type", String)
 ], UpdateTaskDto.prototype, "description", void 0);
 __decorate([

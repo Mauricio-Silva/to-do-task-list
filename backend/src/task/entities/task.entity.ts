@@ -8,7 +8,7 @@ import {
 } from 'typeorm';
 import { User } from 'src/user/entities/user.entity';
 
-@Entity('task_table')
+@Entity()
 export class Task {
   @PrimaryGeneratedColumn('uuid')
   id: string;
@@ -17,7 +17,7 @@ export class Task {
   description: string;
 
   @Column()
-  status: Status = Status.PENDING;
+  status: Status = Status.DO;
 
   // One-to-one Bidirectional relationship
   // @OneToOne(() => User, (user) => user.task)

@@ -86,10 +86,12 @@ let UserService = class UserService {
         }
     }
     async remove(id) {
+        const user = await this.findOneById(id);
         const result = await this.userRepository.delete({ id });
         if (result.affected === 0) {
             throw new common_1.NotFoundException('Not found an user with the informed ID');
         }
+        return 'The user ' + user.name + ' was removed from the database';
     }
     async checkCredential(credentialsDto) {
         const { email, password } = credentialsDto;

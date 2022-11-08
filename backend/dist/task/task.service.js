@@ -24,7 +24,7 @@ let TaskService = class TaskService {
     }
     async create(createTaskDto) {
         try {
-            createTaskDto.status = task_enum_1.Status.PENDING;
+            createTaskDto.status = task_enum_1.Status.DO;
             await this.taskRepository.save(createTaskDto);
             delete createTaskDto.id;
             return createTaskDto;
@@ -79,6 +79,7 @@ let TaskService = class TaskService {
         if (result.affected === 0) {
             throw new common_1.NotFoundException('Not found a task with the informed ID');
         }
+        return 'The task has been removed from the database';
     }
 };
 TaskService = __decorate([

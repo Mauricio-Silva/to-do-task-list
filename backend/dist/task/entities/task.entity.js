@@ -15,7 +15,7 @@ const typeorm_1 = require("typeorm");
 const user_entity_1 = require("../../user/entities/user.entity");
 let Task = class Task {
     constructor() {
-        this.status = task_enum_1.Status.PENDING;
+        this.status = task_enum_1.Status.DO;
     }
 };
 __decorate([
@@ -35,7 +35,7 @@ __decorate([
     __metadata("design:type", Array)
 ], Task.prototype, "users", void 0);
 Task = __decorate([
-    (0, typeorm_1.Entity)('task_table')
+    (0, typeorm_1.Entity)()
 ], Task);
 exports.Task = Task;
 //# sourceMappingURL=task.entity.js.map

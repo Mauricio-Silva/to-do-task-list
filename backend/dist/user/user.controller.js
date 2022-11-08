@@ -40,9 +40,8 @@ let UserController = class UserController {
     updateUser(id, updateUserDto) {
         return this.userService.update(id, updateUserDto);
     }
-    async removeUser(id) {
-        await this.userService.remove(id);
-        return 'The User was successfully Removed';
+    removeUser(id) {
+        return this.userService.remove(id);
     }
 };
 __decorate([

@@ -9,7 +9,7 @@ export declare class TaskController {
     findAllTasks(): Promise<Task[]>;
     findOneTaskById(id: string): Promise<Task>;
     findOneTaskByDescription(description: string): Promise<Task>;
-    createTask(createTaskDto: CreateTaskDto): Promise<Task>;
+    createTask(createTaskDto: CreateTaskDto): Promise<CreateTaskDto>;
     updateTask(id: string, updateTaskDto: UpdateTaskDto): Promise<Task>;
     removeTask(id: string): Promise<string>;
 }

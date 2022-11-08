@@ -5,6 +5,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { CredentialsDto } from './dto/credentials.dto';
+import { UserDto } from './dto/user.dto';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -21,19 +22,20 @@ export class UserService {
   ) {}
 
   //----------------------------------------------------------------------------->
-  async create(createUserDto: CreateUserDto): Promise<CreateUserDto> {
-    createUserDto.confirmationToken = crypto.randomBytes(32).toString('hex');
-    createUserDto.salt = await bcrypt.genSalt();
-    createUserDto.password = await bcrypt.hash(
-      createUserDto.password,
-      createUserDto.salt,
-    );
-    createUserDto.status = false;
+  async create(createUserDto: CreateUserDto): Promise<UserDto> {
+    const user: UserDto = new UserDto();
+    user.name = createUserDto.name;
+    user.email = createUserDto.email;
+    user.password = createUserDto.password;
+    user.confirmationToken = crypto.randomBytes(32).toString('hex');
+    user.salt = await bcrypt.genSalt();
+    user.password = await bcrypt.hash(createUserDto.password, user.salt);
+    user.status = false;
     try {
-      await this.userRepository.save(createUserDto);
-      delete createUserDto.password;
-      delete createUserDto.salt;
-      return createUserDto;
+      await this.userRepository.save(user);
+      delete user.password;
+      delete user.salt;
+      return user;
     } catch (error) {
       if (error.code.toString() === '23505') {
         throw new ConflictException('This email address is already in use');

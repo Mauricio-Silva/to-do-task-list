@@ -20,7 +20,7 @@ export class TaskService {
   //----------------------------------------------------------------------------->
   async create(createTaskDto: CreateTaskDto): Promise<CreateTaskDto> {
     try {
-      createTaskDto.status = Status.PENDING;
+      createTaskDto.status = Status.DO;
       await this.taskRepository.save(createTaskDto);
       delete createTaskDto.id;
       return createTaskDto;

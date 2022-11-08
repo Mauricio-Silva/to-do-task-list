@@ -1,8 +1,8 @@
-import { User } from 'src/user/entities/user.entity';
+import { CreateUserDto } from './../../user/dto/create-user.dto';
 import { Status } from './../enum/task.enum';
 export declare class CreateTaskDto {
     id: string;
     description: string;
     status: Status;
-    users: User[];
+    users: CreateUserDto[];
 }

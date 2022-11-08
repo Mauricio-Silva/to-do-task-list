@@ -15,20 +15,17 @@ class UpdateUserDto {
 }
 __decorate([
     (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsString)({
-        message: 'Inform a valid username',
-    }),
+    (0, class_validator_1.IsString)({ message: 'Inform a valid username' }),
     __metadata("design:type", String)
 ], UpdateUserDto.prototype, "name", void 0);
 __decorate([
     (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsEmail)({}, {
-        message: 'Inform a valid email address',
-    }),
+    (0, class_validator_1.IsEmail)({}, { message: 'Inform a valid email address' }),
     __metadata("design:type", String)
 ], UpdateUserDto.prototype, "email", void 0);
 __decorate([
     (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsBoolean)({ message: 'Inform a valid status' }),
     __metadata("design:type", Boolean)
 ], UpdateUserDto.prototype, "status", void 0);
 exports.UpdateUserDto = UpdateUserDto;

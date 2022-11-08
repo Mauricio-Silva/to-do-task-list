@@ -39,9 +39,8 @@ let TaskController = class TaskController {
     updateTask(id, updateTaskDto) {
         return this.taskService.update(id, updateTaskDto);
     }
-    async removeTask(id) {
-        await this.taskService.remove(id);
-        return 'The Task was successfully Removed';
+    removeTask(id) {
+        return this.taskService.remove(id);
     }
 };
 __decorate([
